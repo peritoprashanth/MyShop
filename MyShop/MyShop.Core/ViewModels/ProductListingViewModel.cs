@@ -9,7 +9,7 @@ namespace MyShop.Core.ViewModels
 {
    public class ProductListingViewModel
     {
-        public IEnumerable<Product> Product { get; set; }
+        public IEnumerable<Product> Products { get; set; }
         public IEnumerable<ProductCategory> ProductCategories { get; set; }
     }
 }

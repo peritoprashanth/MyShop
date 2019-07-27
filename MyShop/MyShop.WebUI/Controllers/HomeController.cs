@@ -28,6 +28,7 @@ namespace MyShop.WebUI.Controllers
             List<Product> products;
             List<ProductCategory> categories = productCategories.Collection().ToList();
 
+            
             if (Category     == null)
             {
                 products = context.Collection().ToList();

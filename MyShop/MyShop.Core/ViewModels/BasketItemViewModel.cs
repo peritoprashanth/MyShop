@@ -14,4 +14,5 @@ namespace MyShop.Core.ViewModels
         public decimal Price { get; set; }
         public string Image { get; set; }
     }
-}
+
+  }

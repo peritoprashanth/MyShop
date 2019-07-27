@@ -84,6 +84,7 @@ namespace MyShop.Services
             {
                 item.Quantity = item.Quantity + 1;
             }
+            basket.BasketItems.Add(item);
             basketContext.Commit();
             
         }

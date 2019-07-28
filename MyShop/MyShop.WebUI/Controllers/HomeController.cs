@@ -14,10 +14,7 @@ namespace MyShop.WebUI.Controllers
         IRepository<Product> context;
         IRepository<ProductCategory> productCategories;
 
-        public HomeController()
-        {
-
-        }
+       
         public HomeController(IRepository<Product> _productRepository, IRepository<ProductCategory> _productCategories)
         {
             context = _productRepository;

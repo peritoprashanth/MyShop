@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace MyShop.WebUI.Controllers
 {
+    [Authorize(Users = "divya@perito.com")]
     public class OrderManagerController : Controller
     {
         IOrderService orderService;
@@ -16,12 +17,14 @@ namespace MyShop.WebUI.Controllers
             this.orderService = OrderService;
         }
         // GET: OrderManager
+        
         public ActionResult Index()
         {
             List<Order> orders = orderService.GetOrderList();
             return View(orders);
         }
 
+        
         public ActionResult UpdateOrder(string Id)
         {
             ViewBag.StatusList = new List<string>()

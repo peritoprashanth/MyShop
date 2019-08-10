@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace MyShop.Core.Models
 {
-    class OrderItem
+    public class OrderItem : BaseEntity
     {
+        public string OrderId { get; set; }
+        public string ProductId { get; set; }
+        public string ProductName { get; set; }
+        public decimal Price { get; set; }
+        public string Image { get; set; }
+        public int Quanity { get; set; }
     }
 }

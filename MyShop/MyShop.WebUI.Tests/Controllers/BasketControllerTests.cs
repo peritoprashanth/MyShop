@@ -8,6 +8,7 @@ using MyShop.WebUI.Controllers;
 using MyShop.WebUI.Tests.Mocks;
 using System.Web.Mvc;
 using MyShop.Core.ViewModels;
+using System.Security.Principal;
 
 namespace MyShop.WebUI.Tests.Controllers
 {
@@ -21,6 +22,7 @@ namespace MyShop.WebUI.Tests.Controllers
             IRepository<Product> products = new Mocks.MockContext<Product>();
             IRepository<Basket> baskets = new Mocks.MockContext<Basket>();
             IRepository<Order> orders = new Mocks.MockContext<Order>();
+            IRepository<Customer> customers = new Mocks.MockContext<Customer>();
 
             var httpContext = new MockHttpContext();
 
@@ -30,7 +32,7 @@ namespace MyShop.WebUI.Tests.Controllers
 
             // Act 
             //basketService.AddToBasket(httpContext, "123");
-            var controller = new BasketController(basketService, orderService);
+            var controller = new BasketController(basketService, orderService, customers);
             controller.ControllerContext = new ControllerContext(httpContext, new System.Web.Routing.RouteData(), controller);
 
             controller.AddToBasket("123");
@@ -51,6 +53,7 @@ namespace MyShop.WebUI.Tests.Controllers
             IRepository<Product> products = new Mocks.MockContext<Product>();
             IRepository<Basket> baskets = new Mocks.MockContext<Basket>();
             IRepository<Order> orders = new Mocks.MockContext<Order>();
+            IRepository<Customer> customers = new Mocks.MockContext<Customer>();
 
             products.Insert(new Product() { Id = "123", Price = 10 });
             products.Insert(new Product() { Id = "222", Price = 5 });
@@ -67,7 +70,7 @@ namespace MyShop.WebUI.Tests.Controllers
             var httpContext = new MockHttpContext();
             httpContext.Request.Cookies.Add(new System.Web.HttpCookie("eCommerceBasket") { Value = basket.Id });
 
-            var controller = new BasketController(basketService,orderService);
+            var controller = new BasketController(basketService, orderService, customers);
             controller.ControllerContext = new ControllerContext(httpContext, new System.Web.Routing.RouteData(), controller);
 
             var result = controller.BasketSummary() as PartialViewResult;
@@ -85,6 +88,7 @@ namespace MyShop.WebUI.Tests.Controllers
             // Arrange           
 
             IRepository<Product> products = new MockContext<Product>();
+            IRepository<Customer> customers = new Mocks.MockContext<Customer>();
             products.Insert(new Product() { Id = "1", Price = 10.00m });
             products.Insert(new Product() { Id = "2", Price = 5.00m });
 
@@ -100,8 +104,14 @@ namespace MyShop.WebUI.Tests.Controllers
             IRepository<Order> orders = new MockContext<Order>();
             IOrderService orderService = new OrderService(orders);
 
-            var controller = new BasketController(basketService, orderService);
+
+            customers.Insert(new Customer { Id = "1", Email = "peritop@gmail.com", ZipCode = "60563" });
+
+            IPrincipal fakeuser = new GenericPrincipal(new GenericIdentity("peritop@gmail.com" ,"Forms"), null);
+
+            var controller = new BasketController(basketService, orderService, customers);
             var httpContext = new MockHttpContext();
+            httpContext.User = fakeuser;
             httpContext.Request.Cookies.Add(new System.Web.HttpCookie("eCommerceBasket")
             {
                 Value = basket.Id

@@ -12,11 +12,13 @@ namespace MyShop.WebUI.Controllers
     {
         IBasketService basketService;
         IOrderService orderService;
+        IRepository<Customer> customers;
         
-        public BasketController(IBasketService basketService, IOrderService orderService)
+        public BasketController(IBasketService basketService, IOrderService orderService, IRepository<Customer> customers)
         {
             this.basketService = basketService;
             this.orderService = orderService;
+            this.customers = customers;
         }
         // GET: Basket
         public ActionResult Index()
@@ -43,13 +45,33 @@ namespace MyShop.WebUI.Controllers
             return PartialView(basketSummary);
         }
 
+        [Authorize]
         public ActionResult Checkout()
         {
-            return View();
+            Customer customer = customers.Collection().FirstOrDefault(c => c.Email == User.Identity.Name );
+            if (customer != null)
+            {
+                Order order = new Order()
+                {
+                    Email = customer.Email,
+                    City = customer.City,
+                    State = customer.State,
+                    Street = customer.Street,
+                    FirstName = customer.FirstName,
+                    ZipCode = customer.ZipCode
+                };
+                return View(order);
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }            
         }
 
 
+
         [HttpPost]
+        [Authorize]
         public ActionResult Checkout(Order order)
         {
             var basketItems = basketService.GetBasketItems(this.HttpContext);
@@ -57,12 +79,15 @@ namespace MyShop.WebUI.Controllers
             // Process payment             
 
             order.OrderStatus = "Order Created";
+            order.Email = User.Identity.Name;
             orderService.CreateOrder(order, basketItems);
             basketService.ClearBasket(this.HttpContext);
+
 
             return RedirectToAction("ThankYou", new { OrderId = order.Id});
         }
 
+        [Authorize]
         public ActionResult ThankYou(string OrderId)
         {
             ViewBag.OrderId = OrderId;

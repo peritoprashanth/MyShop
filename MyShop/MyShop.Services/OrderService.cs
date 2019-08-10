@@ -14,7 +14,7 @@ namespace MyShop.Services
         IRepository<Order> orderContext;
         public OrderService(IRepository<Order> OrderContext)
         {
-            this.orderContext = orderContext;
+            this.orderContext = OrderContext;
 
         }
         
